@@ -26,7 +26,6 @@ class FileSelector:
         return True
 
     def selectFolder2(self, spath):
-        self.clearList()
         filelist = tkfile.askopenfilenames(
                 title = "Select PDF file(s)",
                 initialdir = spath,
@@ -46,5 +45,9 @@ class FileSelector:
 
     def getList(self):
         return self.file_dictionary
+
+    def removeKey(self, item):
+        del self.file_dictionary[item]
+
 
 # ---- end ----

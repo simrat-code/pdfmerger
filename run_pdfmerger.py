@@ -31,16 +31,17 @@ class Application(tk.Frame):
         self.browse = tk.Button(self, text="Browse")
         self.process = tk.Button(self, text="Process")
         self.lbox = tk.Listbox(self, selectmode=tk.SINGLE) #tk.EXTENDED)
-        self.labelA = tk.Label(self, text="")
+        self.btn_delete = tk.Button(self, text="Delete")
         self.labelB = tk.Label(self, text="")
         self.moveup = tk.Button(self, text=" Up ")
         self.movedown = tk.Button(self, text="Down")
 
     def _bindEvents(self):
-        self.browse.bind('<ButtonRelease-1>', self._fillListBox)
+        self.browse.bind('<ButtonRelease-1>', self._actionBrowse)
+        self.process.bind('<ButtonRelease-1>', self._process)
         self.moveup.bind('<ButtonRelease-1>', self._moveup)
         self.movedown.bind('<ButtonRelease-1>', self._movedown)
-        self.process.bind('<ButtonRelease-1>', self._process)
+        self.btn_delete.bind('<ButtonRelease-1>', self._actionDelete)
 
     def _setLayout(self):
         self.label2.grid(
@@ -63,7 +64,7 @@ class Application(tk.Frame):
                 rowspan=5, columnspan=4,
                 padx=2, pady=0
                 )
-        self.labelA.grid(
+        self.btn_delete.grid(
                 row=6, column=0, sticky="ew"
                 )
         self.labelB.grid(
@@ -78,15 +79,21 @@ class Application(tk.Frame):
                 padx=2, pady=2
                 )
 
-    def _fillListBox(self, event=None):
+    def _actionBrowse(self, event=None):
         if self.fs.selectFolder2(spath = self.root_path):
             #
             # folder parsing is success
             # need to populate list-box
             #
-            self.lbox.delete(0, 'end')
-            for item in self.fs.getList().keys():
-                self.lbox.insert('end', item)
+            self.fillListBox(self.fs.getList().keys())
+
+    def fillListBox(self, itemlist):
+        self.lbox.delete(0, 'end')
+        for item in itemlist:
+            self.lbox.insert('end', item)
+
+    def insertToListBox(self, item, pos='end'):
+        self.lbox.insert(pos, item)
 
     def _moveup(self, event=None):
         index = self.lbox.curselection()
@@ -121,6 +128,18 @@ class Application(tk.Frame):
             self.lbox.delete(pos)
             self.lbox.insert(pos + 1, text)
             self.lbox.selection_set(pos + 1)
+
+    def _actionDelete(self, event=None):
+        index = self.lbox.curselection()
+        if not index:
+            messagebox.showerror(
+                    'Error',
+                    'Kindly select item to delete'
+                    )
+            return
+        text = self.lbox.get(index[0])
+        self.lbox.delete(index[0])
+        self.fs.removeKey(text)
 
     def _process(self, event=None):
         try:
