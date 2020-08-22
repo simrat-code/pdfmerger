@@ -30,7 +30,8 @@ class Application(tk.Frame):
         self.entry = tk.Entry(self, textvariable=self.outfile) 
         self.browse = tk.Button(self, text="Browse")
         self.process = tk.Button(self, text="Process")
-        self.lbox = tk.Listbox(self, selectmode=tk.SINGLE) #tk.EXTENDED)
+        self.lbox = tk.Listbox(self, selectmode=tk.SINGLE,
+                width=58, height=15)
         self.btn_delete = tk.Button(self, text="Delete")
         self.labelB = tk.Label(self, text="")
         self.moveup = tk.Button(self, text=" Up ")
@@ -216,6 +217,12 @@ class Application(tk.Frame):
 
 if __name__ == "__main__":
     root = tk.Tk()
+    window_width = root.winfo_reqwidth()
+    window_height = root.winfo_reqheight()
+    pos_right = int(root.winfo_screenwidth()/2 - window_width/2)
+    pos_down = int(root.winfo_screenheight()/3 - window_height/2)
+    root.geometry("+{}+{}".format(pos_right, pos_down))
+
     rpath = os.environ['HOME']
     app = Application(master=root, root_path=rpath)
     app.mainloop()
