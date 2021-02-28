@@ -1,12 +1,18 @@
 #!/usr/bin/env python3
 
-import tkinter as tk
 import subprocess
 import os
 import sys
 
-from tkinter import messagebox
-from fileselector import FileSelector
+try:
+    import tkinter as tk
+
+    from tkinter import messagebox
+    from fileselector import FileSelector
+except ModuleNotFoundError as e:
+    print("Error:", e)
+    sys.exit(1)
+
 
 class Application(tk.Frame):
     def __init__(self, master=None, root_path=None):
